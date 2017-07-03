@@ -18,7 +18,7 @@
 //
 
 //#include "RiceHIG/V0Analysis/interface/XiCorrelation.h"
-#include "XiAnalyzer/XiCorrelation/interface/XiCorrelation.h" // for interactive
+#include "XiAnalyzer/XiAnalyzer/interface/XiCorrelation.h" // for interactive
 
 #define PI 3.1416
 

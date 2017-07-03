@@ -27,7 +27,7 @@ process.GlobalTag.globaltag = '80X_dataRun2_Prompt_v15'
 #process.load("SimTracker.TrackAssociation.TrackAssociatorByHits_cfi")
 #process.load("SimTracker.TrackAssociation.TrackAssociatorByChi2_cfi")
 process.load("XiAnalyzer.XiAnalyzer.xiselector_cff")
-process.load("XiAnalyzer.XiCorrelation.xicorrelation_cff")
+process.load("XiAnalyzer.XiAnalyzer.xicorrelation_cff")
 process.load("XiAnalyzer.XiMassPt.ximasspt_cff")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
@@ -61,9 +61,9 @@ process.source = cms.Source("PoolSource",
     #'/store/user/davidlw/PAHighPt/PA2013_FlowCorr_PromptReco_TrkHM_Gplus_Reverse_ReTracking_v18/28b2b9cce04ec3f20baeb96fbd2295a8/pPb_HM_1000_1_YyR.root',
     #'/store/user/davidlw/PAHighPt/PA2013_FlowCorr_PromptReco_TrkHM_Gplus_ReTracking_v18/28b2b9cce04ec3f20baeb96fbd2295a8/pPb_HM_1000_1_BPd.root'
     # HM file 8 TeV
-    '/store/user/davidlw/PAHighMultiplicity1/RecoSkim2016_Pbp_V0Cascade_FullSkim_v1/170301_205443/0000/pPb_HM_1.root'
+    #'/store/user/davidlw/PAHighMultiplicity1/RecoSkim2016_Pbp_V0Cascade_FullSkim_v1/170301_205443/0000/pPb_HM_1.root'
     #'/store/user/davidlw/PAHighMultiplicity1/RecoSkim2016_Pbp_V0Cascade_FullSkim_v1/170301_205443/0000/pPb_HM_100.root'
-    #'root://cmsxrootd.fnal.gov//store/user/davidlw/PAHighMultiplicity1/RecoSkim2016_Pbp_V0Cascade_FullSkim_v1/170301_205443/0000/pPb_HM_90.root'
+    'root://cmsxrootd.fnal.gov//store/user/davidlw/PAHighMultiplicity1/RecoSkim2016_Pbp_V0Cascade_FullSkim_v1/170301_205443/0000/pPb_HM_90.root'
     #'root://cmsxrootd.fnal.gov//store/user/davidlw/PAHighMultiplicity3/RecoSkim2016_pPb_V0Cascade_v1/170301_201824/0000/pPb_HM_100.root'
     #'root://cmsxrootd.fnal.gov//store/user/davidlw/PAHighMultiplicity3/RecoSkim2016_pPb_V0Cascade_v1/170301_201824/0000/pPb_HM_10.root'
    )
@@ -72,9 +72,9 @@ process.source = cms.Source("PoolSource",
 # Additional output definition
 process.TFileService = cms.Service("TFileService",
                                     fileName = cms.string(
-				    #'XiAnalysisCorrelationNoPtCut8TeVPD1.root'
+				    'XiCorrelationPD4RAMtestFullVar.root'
 				    #'Test8TeV.root'
-                                    'MassPt8TeVPD1.root'
+                                    #'MassPt8TeVPD1.root'
 				    )
                                   )
 # MinBias
@@ -85,7 +85,7 @@ process.TFileService = cms.Service("TFileService",
 process.XiAnalysis = cms.Sequence(process.selectV0CandidatesLowXi*process.xiCorrelation)
 
 # 2D Mass Pt hist
-process.XiAnalysis = cms.Sequence(process.selectV0CandidatesLowXi*process.xiMassPt)
+#process.XiAnalysis = cms.Sequence(process.selectV0CandidatesLowXi*process.xiMassPt)
 
 process.p = cms.Path(process.XiAnalysis)
 
