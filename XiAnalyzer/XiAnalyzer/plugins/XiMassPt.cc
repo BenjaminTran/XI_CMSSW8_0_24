@@ -18,7 +18,7 @@
 //
 
 
-#include "XiAnalyzer/XiMassPt/interface/XiMassPt.h"
+#include "XiAnalyzer/XiAnalyzer/interface/XiMassPt.h"
 
 //
 // constructors and destructor
@@ -34,8 +34,8 @@ XiMassPt::XiMassPt(const edm::ParameterSet& iConfig)
     _trkSrc         = consumes<reco::TrackCollection>(iConfig.getParameter<edm::InputTag>( "trkSrc" ));
 
     _xiCollection   = consumes<reco::VertexCompositeCandidateCollection>(iConfig.getParameter<edm::InputTag>("xiCollection"));
-    _ksCollection = consumes<reco::VertexCompositeCandidateCollection>( iConfig.getParameter<edm::InputTag>("ksCollection"));
-    _laCollection = consumes<reco::VertexCompositeCandidateCollection>(iConfig.getParameter<edm::InputTag>("laCollection"));
+	_ksCollection = consumes<reco::VertexCompositeCandidateCollection>( iConfig.getParameter<edm::InputTag>("ksCollection"));
+	_laCollection = consumes<reco::VertexCompositeCandidateCollection>(iConfig.getParameter<edm::InputTag>("laCollection"));
     _vertexCollName = consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("vertexCollName"));
 
     zVtxHigh_ = iConfig.getParameter<double>( "zVtxHigh" );
@@ -82,28 +82,23 @@ XiMassPt::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     bestvyError = vtx.yError(  );
     bestvzError = vtx.zError(  );
 
-    if( bestvz > zVtxHigh_ || bestvz < zVtxLow_ ) return;
+    if( bestvz > zVtxHigh_ || bestvz < zVtxLow_ ){
+        cout << "Bad zvtx" << endl;
+        return;
+    }
 
-	if( xi_ )
-	{
-		edm::Handle<reco::VertexCompositeCandidateCollection> xiCollection;
-		iEvent.getByToken(_xiCollection, xiCollection);
-		if( !xiCollection.isValid(  ) ) return;
-	}
+    if( xi_ ) cout << "Will Access Xi" << endl;
+    if( ks_ ) cout << "Will Access Ks" << endl;
+    if( la_ ) cout << "Will Access La" << endl;
 
-	if( ks_ )
-	{
-		edm::Handle<reco::VertexCompositeCandidateCollection> ksCollection;
-		iEvent.getByToken( _ksCollection, ksCollection );
-		if( !ksCollection.isValid(  ) ) return;
-	}
+    edm::Handle<reco::VertexCompositeCandidateCollection> xiCollection;
+    iEvent.getByToken(_xiCollection, xiCollection);
 
-	if( la_ )
-	{
-		edm::Handle<reco::VertexCompositeCandidateCollection> laCollection;
-		iEvent.getByToken( _laCollection, laCollection );
-		if( !laCollection.isValid(  ) ) return;
-	}
+    edm::Handle<reco::VertexCompositeCandidateCollection> ksCollection;
+    iEvent.getByToken( _ksCollection, ksCollection );
+
+    edm::Handle<reco::VertexCompositeCandidateCollection> laCollection;
+    iEvent.getByToken( _laCollection, laCollection );
 
     edm::Handle<reco::TrackCollection> tracks;
     iEvent.getByToken( _trkSrc, tracks );
@@ -137,7 +132,8 @@ XiMassPt::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     if( EtaPtCutnTracks >= multLow_ && EtaPtCutnTracks < multHigh_ ){
         nEvtCut->Fill( 1 );
         EtaPtCutnTrackHist->Fill( EtaPtCutnTracks );
-        if( xi_ )
+        cout << "Good Multiplicity" << endl;
+        if( xi_ && xiCollection.isValid())
         {
             for(reco::VertexCompositeCandidateCollection::const_iterator xiCand =
                     xiCollection->begin(); xiCand != xiCollection->end(); xiCand++ ) {
@@ -153,7 +149,8 @@ XiMassPt::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
                 cout<<"Fill Xi"<<endl;
             }
         }
-        if( ks_ )
+        else cout << "Xi Not valid" << endl;
+        if( ks_ && ksCollection.isValid())
         {
             for(reco::VertexCompositeCandidateCollection::const_iterator ksCand =
                     ksCollection->begin(); ksCand != ksCollection->end(); ksCand++ ) {
@@ -169,7 +166,8 @@ XiMassPt::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
                 cout<<"Fill Ks"<<endl;
             }
         }
-        if( la_ )
+        else cout << "Ks Not valid" << endl;
+        if( la_ && laCollection.isValid())
         {
             for(reco::VertexCompositeCandidateCollection::const_iterator laCand =
                     laCollection->begin(); laCand != laCollection->end(); laCand++ ) {
@@ -185,10 +183,10 @@ XiMassPt::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
                 cout<<"Fill La"<<endl;
             }
         }
-   
-
-
+        else cout << "La Not valid" << endl;
     }
+    else
+    cout << "Bad multiplicity" << endl;
 }
 
 

@@ -193,6 +193,8 @@ class XiMassPt : public edm::EDAnalyzer {
         vector<double> *zvtxVect;
 
         TH2D* MassPt;
+        TH2D* KsMassPt;
+        TH2D* LaMassPt;
         TH1D* nTrk;
         TH1D* nEvtCut;
         TH1D* EtaPtCutnTrackHist;

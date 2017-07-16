@@ -2,7 +2,7 @@ import FWCore.ParameterSet.Config as cms
 
 process = cms.Process("XiAna")
 
-process.SimpleMemoryCheck = cms.Service("SimpleMemoryCheck",ignoreTotal = cms.untracked.int32(1) )
+#process.SimpleMemoryCheck = cms.Service("SimpleMemoryCheck",ignoreTotal = cms.untracked.int32(1) )
 
 ### standard includes
 process.load("Configuration.StandardSequences.Digi_cff")
@@ -27,8 +27,10 @@ process.GlobalTag.globaltag = '80X_dataRun2_Prompt_v15'
 #process.load("SimTracker.TrackAssociation.TrackAssociatorByHits_cfi")
 #process.load("SimTracker.TrackAssociation.TrackAssociatorByChi2_cfi")
 process.load("XiAnalyzer.XiAnalyzer.xiselector_cff")
+process.load("XiAnalyzer.XiAnalyzer.v0selector_cff")
 process.load("XiAnalyzer.XiAnalyzer.xicorrelation_cff")
-process.load("XiAnalyzer.XiMassPt.ximasspt_cff")
+process.load("XiAnalyzer.XiAnalyzer.ximasspt_cff")
+#process.load("XiAnalyzer.XiMassPt.ximasspt_cff")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(5000)
@@ -63,18 +65,20 @@ process.source = cms.Source("PoolSource",
     # HM file 8 TeV
     #'/store/user/davidlw/PAHighMultiplicity1/RecoSkim2016_Pbp_V0Cascade_FullSkim_v1/170301_205443/0000/pPb_HM_1.root'
     #'/store/user/davidlw/PAHighMultiplicity1/RecoSkim2016_Pbp_V0Cascade_FullSkim_v1/170301_205443/0000/pPb_HM_100.root'
-    'root://cmsxrootd.fnal.gov//store/user/davidlw/PAHighMultiplicity1/RecoSkim2016_Pbp_V0Cascade_FullSkim_v1/170301_205443/0000/pPb_HM_90.root'
-    #'root://cmsxrootd.fnal.gov//store/user/davidlw/PAHighMultiplicity3/RecoSkim2016_pPb_V0Cascade_v1/170301_201824/0000/pPb_HM_100.root'
-    #'root://cmsxrootd.fnal.gov//store/user/davidlw/PAHighMultiplicity3/RecoSkim2016_pPb_V0Cascade_v1/170301_201824/0000/pPb_HM_10.root'
+    #'root://cmsxrootd.fnal.gov//store/user/davidlw/PAHighMultiplicity1/RecoSkim2016_Pbp_V0Cascade_FullSkim_v1/170301_205443/0000/pPb_HM_90.root'
+    #'root://cmsxrootd.fnal.gov//store/user/davidlw/PAHighMultiplicity1/RecoSkim2016_pPb_V0Cascade_FullSkim_v1/170301_205416/0000/pPb_HM_100.root'
+    'root://cmsxrootd.fnal.gov//store/user/davidlw/PAHighMultiplicity1/RecoSkim2016_pPb_V0Cascade_FullSkim_v2/170706_175644/0000/pPb_HM_10.root'
+   # 'root://cmsxrootd.fnal.gov//store/user/davidlw/PAHighMultiplicity1/RecoSkim2016_pPb_V0Cascade_FullSkim_v2/170706_175644/0000/pPb_HM_11.root',
+   # 'root://cmsxrootd.fnal.gov//store/user/davidlw/PAHighMultiplicity1/RecoSkim2016_pPb_V0Cascade_FullSkim_v2/170706_175644/0000/pPb_HM_12.root',
+   # 'root://cmsxrootd.fnal.gov//store/user/davidlw/PAHighMultiplicity1/RecoSkim2016_pPb_V0Cascade_FullSkim_v2/170706_175644/0000/pPb_HM_16.root'
    )
 )
 
 # Additional output definition
 process.TFileService = cms.Service("TFileService",
                                     fileName = cms.string(
-				    'XiCorrelationPD4RAMtestFullVar.root'
-				    #'Test8TeV.root'
-                                    #'MassPt8TeVPD1.root'
+                                    'kslaTest.root'
+				    #'CasCutLoose.root'
 				    )
                                   )
 # MinBias
@@ -82,10 +86,14 @@ process.TFileService = cms.Service("TFileService",
 
 # HM
 #process.XiAnalysis = cms.Sequence(process.hltHM*process.selectV0CandidatesLowXi*process.xiCorrelation)
-process.XiAnalysis = cms.Sequence(process.selectV0CandidatesLowXi*process.xiCorrelation)
+#process.XiAnalysis = cms.Sequence(process.selectV0CandidatesLowXi*process.xiCorrelation)
 
 # 2D Mass Pt hist
+#Xi
 #process.XiAnalysis = cms.Sequence(process.selectV0CandidatesLowXi*process.xiMassPt)
+
+#Ks and La
+process.XiAnalysis = cms.Sequence(process.selectV0CandidatesLowXi*process.selectV0CandidatesNewlambdatight*process.selectV0CandidatesNewkshort*process.xiMassPt)
 
 process.p = cms.Path(process.XiAnalysis)
 
