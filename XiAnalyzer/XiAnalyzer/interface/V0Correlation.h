@@ -1,5 +1,5 @@
-#ifndef XIANALYZER__KSLA_CORRELATION_H
-#define XIANALYZER__KSLA_CORRELATION_H
+#ifndef XIANALYZER__V0_CORRELATION_H
+#define XIANALYZER__V0_CORRELATION_H
 
 #include <memory>
 #include <string>

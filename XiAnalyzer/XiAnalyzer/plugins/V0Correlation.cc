@@ -35,8 +35,8 @@ V0Correlation::V0Correlation(const edm::ParameterSet& iConfig)
 
     rejectDaughter_ = iConfig.getUntrackedParameter<bool>("rejectDaughter");
     
-    _vertexCollName = consumes<reco::VertexCollection>(edm::InputTag("vertexCollName"));
-    _trkSrc = consumes<reco::TrackCollection>(edm::InputTag("trkSrc"));
+    _vertexCollName = consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("vertexCollName"));
+    _trkSrc = consumes<reco::TrackCollection>(iConfig.getParameter<edm::InputTag>("trkSrc"));
     _ksCollection = consumes<reco::VertexCompositeCandidateCollection>(iConfig.getUntrackedParameter<edm::InputTag>("ksCollection"));
     _laCollection = consumes<reco::VertexCompositeCandidateCollection>(iConfig.getUntrackedParameter<edm::InputTag>("laCollection"));
 }
@@ -212,7 +212,7 @@ V0Correlation::analyze(const edm::Event& iEvent, const edm::EventSetup&
                 if(eta<=etaMax_trg_ && eta>=etaMin_trg_ && pt<=ptcut_ks_[i+1] && pt>=ptcut_ks_[i]){
                     hMass_ks[i]->Fill(mass);
                     if(mass<=(mean_ks_[i]+peakFactor_*sigma_ks_[i]) && mass>=(mean_ks_[i]-peakFactor_*sigma_ks_[i])){
-                        pVect_trg_ks[i]->push_back(pvector); //peak region
+                        pVect_trg_ks[i]->push_back(pvector);
                         pVect_dau_ks[i]->push_back(pvector_dau1);
                         pVect_dau_ks[i]->push_back(pvector_dau2);
                         hPt_ks[i]->Fill(pt);//,1.0/effks);
@@ -221,7 +221,7 @@ V0Correlation::analyze(const edm::Event& iEvent, const edm::EventSetup&
                         hKET_ks[i]->Fill(KET);//,1.0/effks);
                     }
                     if((mass<=(mean_ks_[i]-sideFactor_*sigma_ks_[i]) && mass>=0.425) || (mass<=0.57 && mass>=(mean_ks_[i]+sideFactor_*sigma_ks_[i]))){
-                        pVect_trg_ks_bkg[i]->push_back(pvector); //sideband
+                        pVect_trg_ks_bkg[i]->push_back(pvector);
                         pVect_dau_ks_bkg[i]->push_back(pvector_dau1);
                         pVect_dau_ks_bkg[i]->push_back(pvector_dau2);
                         hPt_ks_bkg[i]->Fill(pt);//,1.0/effks);
@@ -691,8 +691,8 @@ V0Correlation::beginJob()
         hMass_ks[i] = fs->make<TH1D>(Form("masskshort_pt%d",i),";GeV",2000,0,1.0);
         hMass_la[i] = fs->make<TH1D>(Form("masslambda_pt%d",i),";GeV",2000,0.5,1.5);
         hMult_ks[i] = fs->make<TH1D>(Form("mult_ks_pt%d",i),";N",250,0,250);
-        hSignal_ks[i] = fs->make<TH2D>(Form("signalkshort_pt%d",i),";#Delta#eta;#Delta#phi",33,-4.95,4.95,31,-(0.5-1.0/32)*PI,(1.5-1.0/32)*PI); //peak
-        hBackground_ks[i] = fs->make<TH2D>(Form("backgroundkshort_pt%d",i),";#Delta#eta;#Delta#phi",33,-4.95,4.95,31,-(0.5-1.0/32)*PI,(1.5-1.0/32)*PI); //peak mix event
+        hSignal_ks[i] = fs->make<TH2D>(Form("signalkshort_pt%d",i),";#Delta#eta;#Delta#phi",33,-4.95,4.95,31,-(0.5-1.0/32)*PI,(1.5-1.0/32)*PI);
+        hBackground_ks[i] = fs->make<TH2D>(Form("backgroundkshort_pt%d",i),";#Delta#eta;#Delta#phi",33,-4.95,4.95,31,-(0.5-1.0/32)*PI,(1.5-1.0/32)*PI);
         hMult_la[i] = fs->make<TH1D>(Form("mult_la_pt%d",i),";N",250,0,250);
         hSignal_la[i] = fs->make<TH2D>(Form("signallambda_pt%d",i),";#Delta#eta;#Delta#phi",33,-4.95,4.95,31,-(0.5-1.0/32)*PI,(1.5-1.0/32)*PI);
         hBackground_la[i] = fs->make<TH2D>(Form("backgroundlambda_pt%d",i),";#Delta#eta;#Delta#phi",33,-4.95,4.95,31,-(0.5-1.0/32)*PI,(1.5-1.0/32)*PI);
@@ -707,8 +707,8 @@ V0Correlation::beginJob()
         hEta_ks_bkg[i] = fs->make<TH1D>(Form("Etakshort_bkg_pt%d",i),";GeV",24,-2.4,2.4);
         hEta_la_bkg[i] = fs->make<TH1D>(Form("Etalambda_bkg_pt%d",i),";GeV",24,-2.4,2.4);
         hMult_ks_bkg[i] = fs->make<TH1D>(Form("mult_ks_bkg_pt%d",i),";N",250,0,250);
-        hSignal_ks_bkg[i] = fs->make<TH2D>(Form("signalkshort_bkg_pt%d",i),";#Delta#eta;#Delta#phi",33,-4.95,4.95,31,-(0.5-1.0/32)*PI,(1.5-1.0/32)*PI); //sideband
-        hBackground_ks_bkg[i] = fs->make<TH2D>(Form("backgroundkshort_bkg_pt%d",i),";#Delta#eta;#Delta#phi",33,-4.95,4.95,31,-(0.5-1.0/32)*PI,(1.5-1.0/32)*PI); //sideband mix event
+        hSignal_ks_bkg[i] = fs->make<TH2D>(Form("signalkshort_bkg_pt%d",i),";#Delta#eta;#Delta#phi",33,-4.95,4.95,31,-(0.5-1.0/32)*PI,(1.5-1.0/32)*PI);
+        hBackground_ks_bkg[i] = fs->make<TH2D>(Form("backgroundkshort_bkg_pt%d",i),";#Delta#eta;#Delta#phi",33,-4.95,4.95,31,-(0.5-1.0/32)*PI,(1.5-1.0/32)*PI);
         hMult_la_bkg[i] = fs->make<TH1D>(Form("mult_la_bkg_pt%d",i),";N",250,0,250);
         hSignal_la_bkg[i] = fs->make<TH2D>(Form("signallambda_bkg_pt%d",i),";#Delta#eta;#Delta#phi",33,-4.95,4.95,31,-(0.5-1.0/32)*PI,(1.5-1.0/32)*PI);
         hBackground_la_bkg[i] = fs->make<TH2D>(Form("backgroundlambda_bkg_pt%d",i),";#Delta#eta;#Delta#phi",33,-4.95,4.95,31,-(0.5-1.0/32)*PI,(1.5-1.0/32)*PI);
@@ -1051,10 +1051,10 @@ V0Correlation::endJob() {
                         
                         //double effweight_ass = effhisto->GetBinContent(effhisto->FindBin(eta_ass,pt_ass));
 
-						if(rejectDaughter_)
-						{                        
-								if(fabs(eta_ass - eta_trg_dau1)<0.03 && fabs(phi_ass - phi_trg_dau1)<0.03) continue;
-								if(fabs(eta_ass - eta_trg_dau2)<0.03 && fabs(phi_ass - phi_trg_dau2)<0.03) continue;
+			if(rejectDaughter_)
+                	{                        
+                        if(fabs(eta_ass - eta_trg_dau1)<0.03 && fabs(phi_ass - phi_trg_dau1)<0.03) continue;
+                        if(fabs(eta_ass - eta_trg_dau2)<0.03 && fabs(phi_ass - phi_trg_dau2)<0.03) continue;
                         }
 
                         double deltaEta=eta_ass-eta_trg;
