@@ -87,9 +87,6 @@ XiMassPt::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
         return;
     }
 
-    if( xi_ ) cout << "Will Access Xi" << endl;
-    if( ks_ ) cout << "Will Access Ks" << endl;
-    if( la_ ) cout << "Will Access La" << endl;
 
     edm::Handle<reco::VertexCompositeCandidateCollection> xiCollection;
     iEvent.getByToken(_xiCollection, xiCollection);
@@ -132,7 +129,6 @@ XiMassPt::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     if( EtaPtCutnTracks >= multLow_ && EtaPtCutnTracks < multHigh_ ){
         nEvtCut->Fill( 1 );
         EtaPtCutnTrackHist->Fill( EtaPtCutnTracks );
-        cout << "Good Multiplicity" << endl;
         if( xi_ && xiCollection.isValid())
         {
             for(reco::VertexCompositeCandidateCollection::const_iterator xiCand =
@@ -149,7 +145,6 @@ XiMassPt::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
                 cout<<"Fill Xi"<<endl;
             }
         }
-        else cout << "Xi Not valid" << endl;
         if( ks_ && ksCollection.isValid())
         {
             for(reco::VertexCompositeCandidateCollection::const_iterator ksCand =
@@ -166,7 +161,6 @@ XiMassPt::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
                 cout<<"Fill Ks"<<endl;
             }
         }
-        else cout << "Ks Not valid" << endl;
         if( la_ && laCollection.isValid())
         {
             for(reco::VertexCompositeCandidateCollection::const_iterator laCand =
@@ -183,10 +177,7 @@ XiMassPt::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
                 cout<<"Fill La"<<endl;
             }
         }
-        else cout << "La Not valid" << endl;
     }
-    else
-    cout << "Bad multiplicity" << endl;
 }
 
 
@@ -194,6 +185,10 @@ XiMassPt::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 void 
 XiMassPt::beginJob()
 {
+    if( xi_ ) cout << "Will Access Xi" << endl;
+    if( ks_ ) cout << "Will Access Ks" << endl;
+    if( la_ ) cout << "Will Access La" << endl;
+
     MassPt = fs->make<TH2D>( "MassPt", "#Xi Mass and Pt", 150, 1.25, 1.40, 100, 0, 10 );
     LaMassPt = fs->make<TH2D>( "LaMassPt", "#Lambda Mass and Pt", 150, 1.08, 1.155, 100, 0, 10 );
     KsMassPt = fs->make<TH2D>( "KsMassPt", "Ks Mass and Pt", 270, 0.43, 0.565, 100, 0, 10 );

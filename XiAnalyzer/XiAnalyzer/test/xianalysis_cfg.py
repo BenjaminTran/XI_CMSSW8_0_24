@@ -29,6 +29,7 @@ process.GlobalTag.globaltag = '80X_dataRun2_Prompt_v15'
 process.load("XiAnalyzer.XiAnalyzer.xiselector_cff")
 process.load("XiAnalyzer.XiAnalyzer.v0selector_cff")
 process.load("XiAnalyzer.XiAnalyzer.xicorrelation_cff")
+process.load("XiAnalyzer.XiAnalyzer.v0correlation_cff")
 process.load("XiAnalyzer.XiAnalyzer.ximasspt_cff")
 #process.load("XiAnalyzer.XiMassPt.ximasspt_cff")
 
@@ -36,7 +37,7 @@ process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(5000)
 process.options = cms.untracked.PSet(wantSummary = cms.untracked.bool(True))
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
-#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 
 process.source = cms.Source("PoolSource",
     # replace 'myfile.root' with the source file you want to use
@@ -67,35 +68,44 @@ process.source = cms.Source("PoolSource",
     #'/store/user/davidlw/PAHighMultiplicity1/RecoSkim2016_Pbp_V0Cascade_FullSkim_v1/170301_205443/0000/pPb_HM_100.root'
     #'root://cmsxrootd.fnal.gov//store/user/davidlw/PAHighMultiplicity1/RecoSkim2016_Pbp_V0Cascade_FullSkim_v1/170301_205443/0000/pPb_HM_90.root'
     #'root://cmsxrootd.fnal.gov//store/user/davidlw/PAHighMultiplicity1/RecoSkim2016_pPb_V0Cascade_FullSkim_v1/170301_205416/0000/pPb_HM_100.root'
-    'root://cmsxrootd.fnal.gov//store/user/davidlw/PAHighMultiplicity1/RecoSkim2016_pPb_V0Cascade_FullSkim_v2/170706_175644/0000/pPb_HM_10.root'
-   # 'root://cmsxrootd.fnal.gov//store/user/davidlw/PAHighMultiplicity1/RecoSkim2016_pPb_V0Cascade_FullSkim_v2/170706_175644/0000/pPb_HM_11.root',
-   # 'root://cmsxrootd.fnal.gov//store/user/davidlw/PAHighMultiplicity1/RecoSkim2016_pPb_V0Cascade_FullSkim_v2/170706_175644/0000/pPb_HM_12.root',
-   # 'root://cmsxrootd.fnal.gov//store/user/davidlw/PAHighMultiplicity1/RecoSkim2016_pPb_V0Cascade_FullSkim_v2/170706_175644/0000/pPb_HM_16.root'
+   'root://cmsxrootd.fnal.gov//store/user/davidlw/PAHighMultiplicity1/RecoSkim2016_pPb_V0Cascade_FullSkim_v3/170706_190142/0000/pPb_HM_100.root'
    )
 )
 
 # Additional output definition
 process.TFileService = cms.Service("TFileService",
                                     fileName = cms.string(
-                                    'kslaTest.root'
+                                    #'kslaMassPt.root'
 				    #'CasCutLoose.root'
+                                    'V0Correlation.root'
 				    )
                                   )
+# CORRELATION
 # MinBias
 #process.XiAnalysis = cms.Sequence(process.selectV0CandidatesLowXi*process.xiCorrelation)
 
 # HM
 #process.XiAnalysis = cms.Sequence(process.hltHM*process.selectV0CandidatesLowXi*process.xiCorrelation)
-#process.XiAnalysis = cms.Sequence(process.selectV0CandidatesLowXi*process.xiCorrelation)
+process.XiCorrAnalysis = cms.Sequence(process.selectV0CandidatesLowXi*process.xiCorrelation)
+process.V0CorrAnalysis = cms.Sequence(process.selectV0CandidatesNewlambdatight*process.selectV0CandidatesNewkshort*process.v0Correlation)
 
-# 2D Mass Pt hist
-#Xi
-#process.XiAnalysis = cms.Sequence(process.selectV0CandidatesLowXi*process.xiMassPt)
+# 2D Mass Pt hist Note: only one process at a time pls
+# all particles
+process.MassPtAnalysis = cms.Sequence(process.selectV0CandidatesLowXi*process.selectV0CandidatesNewlambdatight*process.selectV0CandidatesNewkshort*process.MassPt)
 
-#Ks and La
-process.XiAnalysis = cms.Sequence(process.selectV0CandidatesLowXi*process.selectV0CandidatesNewlambdatight*process.selectV0CandidatesNewkshort*process.xiMassPt)
+# Xi only
+process.XiMassPtAnalysis = cms.Sequence(process.selectV0CandidatesLowXi*process.selectV0CandidatesNewlambdatight*process.selectV0CandidatesNewkshort*process.XiMassPt)
 
-process.p = cms.Path(process.XiAnalysis)
+# KsLa only
+process.KslaMassPtAnalysis = cms.Sequence(process.selectV0CandidatesLowXi*process.selectV0CandidatesNewlambdatight*process.selectV0CandidatesNewkshort*process.KslaMassPt)
+
+# Ks only
+process.KsMassPtAnalysis = cms.Sequence(process.selectV0CandidatesLowXi*process.selectV0CandidatesNewlambdatight*process.selectV0CandidatesNewkshort*process.KsMassPt)
+
+# La only
+process.LaMassPtAnalysis = cms.Sequence(process.selectV0CandidatesLowXi*process.selectV0CandidatesNewlambdatight*process.selectV0CandidatesNewkshort*process.LaMassPt)
+
+process.p = cms.Path(process.V0CorrAnalysis)
 
 process.schedule = cms.Schedule(process.p)
 
