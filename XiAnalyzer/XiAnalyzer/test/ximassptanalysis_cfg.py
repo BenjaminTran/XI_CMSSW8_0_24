@@ -1,5 +1,4 @@
 import FWCore.ParameterSet.Config as cms
-
 process = cms.Process("XiAna")
 
 #process.SimpleMemoryCheck = cms.Service("SimpleMemoryCheck",ignoreTotal = cms.untracked.int32(1) )
@@ -31,6 +30,7 @@ process.load("XiAnalyzer.XiAnalyzer.v0selector_cff")
 process.load("XiAnalyzer.XiAnalyzer.xicorrelation_cff")
 process.load("XiAnalyzer.XiAnalyzer.v0correlation_cff")
 process.load("XiAnalyzer.XiAnalyzer.ximasspt_cff")
+process.load("XiAnalyzer.XiAnalyzer.xiomttree_cff")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(5000)
@@ -67,16 +67,15 @@ process.source = cms.Source("PoolSource",
     #'/store/user/davidlw/PAHighMultiplicity1/RecoSkim2016_Pbp_V0Cascade_FullSkim_v1/170301_205443/0000/pPb_HM_100.root'
     #'root://cmsxrootd.fnal.gov//store/user/davidlw/PAHighMultiplicity1/RecoSkim2016_Pbp_V0Cascade_FullSkim_v1/170301_205443/0000/pPb_HM_90.root'
     #'root://cmsxrootd.fnal.gov//store/user/davidlw/PAHighMultiplicity1/RecoSkim2016_pPb_V0Cascade_FullSkim_v1/170301_205416/0000/pPb_HM_100.root'
-   'root://cmsxrootd.fnal.gov//store/user/davidlw/PAHighMultiplicity1/RecoSkim2016_pPb_V0Cascade_FullSkim_v3/170706_190142/0000/pPb_HM_100.root'
+   'root://cmsxrootd.fnal.gov//store/user/davidlw/PAHighMultiplicity1/RecoSkim2016_pPb_V0Cascade_FullSkim_v3/170706_190142/0000/pPb_HM_101.root'
    )
 )
 
 # Additional output definition
 process.TFileService = cms.Service("TFileService",
                                     fileName = cms.string(
-                                    #'kslaMassPt.root'
-				    'CasCutLoose.root'
-                                    #'V0Correlation.root'
+				    'CasCutLooseTester.root'
+                                    #'XiOmTTree.root'
 				    )
                                   )
 # CORRELATION
@@ -88,7 +87,7 @@ process.TFileService = cms.Service("TFileService",
 process.XiCorrAnalysis = cms.Sequence(process.selectV0CandidatesLowXi*process.xiCorrelation)
 process.V0CorrAnalysis = cms.Sequence(process.selectV0CandidatesNewlambdatight*process.selectV0CandidatesNewkshort*process.v0Correlation)
 
-# 2D Mass Pt hist Note: only one process at a time pls
+# 2D Mass Pt hist 
 # all particles
 process.MassPtAnalysis = cms.Sequence(process.selectV0CandidatesLowXi*process.selectV0CandidatesNewlambdatight*process.selectV0CandidatesNewkshort*process.MassPt)
 
@@ -104,6 +103,10 @@ process.KsMassPtAnalysis = cms.Sequence(process.selectV0CandidatesNewkshort*proc
 # La only
 process.LaMassPtAnalysis = cms.Sequence(process.selectV0CandidatesNewlambdatight*process.LaMassPt)
 
+#Tree producer
+process.XiOmTreeProd = cms.Sequence(process.xiTree)
+
+#process.p = cms.Path(process.XiOmTreeProd)
 process.p = cms.Path(process.XiMassPtAnalysis)
 
 process.schedule = cms.Schedule(process.p)

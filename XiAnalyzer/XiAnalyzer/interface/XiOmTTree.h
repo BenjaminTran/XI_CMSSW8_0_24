@@ -85,6 +85,9 @@ struct XiData{
                 float VTrkP3DIpSigValue_;
                 float xiFlightSigValue_;
                 float distanceSigValue_; //lambda
+                //Candidate parameters
+                float mass_;
+                float pt_;
         };
 
 class XiOmTTree : public edm::EDAnalyzer

@@ -54,15 +54,17 @@ XiOmTTree::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	// Get primary vertex
 	edm::Handle<reco::VertexCollection> vertices;
 	iEvent.getByToken(_vertexCollName,vertices);
+	const reco::Vertex & bestvtx = (*vertices)[0];
+        /*
 	double  bestvx=-999.9, bestvy=-999.9, bestvz=-999.9;
 	double bestvzError=-999.9, bestvxError=-999.9, bestvyError=-999.9;
-	const reco::Vertex & bestvtx = (*vertices)[0];
 	bestvx		 = bestvtx.x();
 	bestvy		 = bestvtx.y();
 	bestvz		 = bestvtx.z();
 	bestvxError	 = bestvtx.xError();
 	bestvyError	 = bestvtx.yError();
 	bestvzError	 = bestvtx.zError();
+        */
 
     edm::Handle< reco::VertexCompositeCandidateCollection > v0candidates;
     iEvent.getByToken(_xiCollection, v0candidates);
@@ -70,12 +72,10 @@ XiOmTTree::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
         return;
     }
 
-    cout << "0" << endl;
 	for( reco::VertexCompositeCandidateCollection::const_iterator v0cand =
 					v0candidates->begin(); v0cand != v0candidates->end();
 					v0cand++)
     {
-    cout << "0.5" << endl;
 
         //double secvz = -999.9, secvx = -999.9, secvy = -999.9;
 
@@ -92,12 +92,10 @@ XiOmTTree::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
         reco::TrackRef  lambda_dau1 = lambda_d1->get<reco::TrackRef>();
         reco::TrackRef  lambda_dau2 = lambda_d2->get<reco::TrackRef>();
 
-        cout << "1" << endl;
-
-
-
         //pt,mass
         double eta_xi  = v0cand->eta();
+        double mass = v0cand->mass();
+        double pt = v0cand->pt();
 
         if(eta_xi > 2.4 || eta_xi < -2.4){
             cout << "bad eta" << endl;
@@ -124,7 +122,6 @@ XiOmTTree::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
         vector<RefCountedKinematicParticle> lamParticles;
         lamParticles.push_back(pFactory.particle(pion_lambdaTT,piMass,chi,ndf,piMass_sigma));
         lamParticles.push_back(pFactory.particle(proton_lambdaTT,protonMass,chi,ndf,protonMass_sigma));
-        cout << "2" << endl;
 
         KinematicParticleVertexFitter fitter;
         RefCountedKinematicTree v0FitTree;
@@ -161,7 +158,6 @@ XiOmTTree::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
         FreeTrajectoryState theXiFTS = theCurrentXiCandKinematicState.freeTrajectoryState();
         TransientTrack xiTT = (*theTTB).build(theXiFTS);
 
-        cout << "3" << endl;
 
         //3D impact parameter of Xi wrt primary vertex
         float xi3DIpSigValue = -1000;
@@ -206,7 +202,6 @@ XiOmTTree::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
         typedef ROOT::Math::SMatrix<double, 3, 3, ROOT::Math::MatRepSym<double, 3>> SMatrixSym3D;
         typedef ROOT::Math::SVector<double, 3> SVector3;
 
-        cout << "4" << endl;
         // Getting CovMatrix
         std::vector<double> vVtxEVec;
         vVtxEVec.push_back(lamDecayVertex->error().cxx());
@@ -249,7 +244,6 @@ XiOmTTree::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
         double distanceMag      = ROOT::Math::Mag(distanceVector);
         double distanceSigma    = sqrt(ROOT::Math::Similarity(totalCov, distanceVector))/distanceMag;
         double distanceSigValue = distanceMag/distanceSigma;
-        cout << "5" << endl;
 
         xistruct_.xi3DIpSigValue_     = xi3DIpSigValue;
         xistruct_.xiPi3DIpSigValue_   = xiPi3DIpSigValue;
@@ -257,8 +251,11 @@ XiOmTTree::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
         xistruct_.VTrkP3DIpSigValue_  = VTrkP3DIpSigValue;
         xistruct_.xiFlightSigValue_   = xiFlightSigValue;
         xistruct_.distanceSigValue_   = distanceSigValue;
+        xistruct_.mass_ = mass;
+        xistruct_.pt_ = pt;
         cout << "leaf filled" << endl;
 
+        /*
         //Skim cuts
         math::XYZPoint bestvtxpt(bestvx,bestvy,bestvz);
         //Impact Sig
@@ -302,6 +299,7 @@ XiOmTTree::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
         xistruct_.batDauLongImpactSig_  = xi_dau2_dz/xi_dau2_dzerror;
         xistruct_.xiVtxSignificance3D_  = dl_xi/dlerror_xi;
         xistruct_.vtxSignificance3D_    = dl_la/dlerror_la;
+        */
 
         XiTree->Fill();
     }
@@ -320,12 +318,16 @@ XiOmTTree::beginJob()
     XiTree->Branch("vtrkp3dipsig",&xistruct_.VTrkP3DIpSigValue_,"vtrkp3dipsigpt/F");
     XiTree->Branch("xiflightsig",&xistruct_.xiFlightSigValue_,"xiflightsig/F");
     XiTree->Branch("distancesig",&xistruct_.distanceSigValue_,"distancesig/F");
+    XiTree->Branch( "mass",&xistruct_.mass_,"mass/F" );
+    XiTree->Branch( "pt",&xistruct_.pt_,"pt/F" );
+    /*
     XiTree->Branch("dautransimpactsig",&xistruct_.dauTransImpactSig_,"dautransimpactsig/F");
     XiTree->Branch("daulongimpactsig",&xistruct_.dauLongImpactSig_,"daulongimpactsig/F");
     XiTree->Branch("batdautransimpactsig",&xistruct_.batDauTransImpactSig_,"batdautransimpactsig/F");
     XiTree->Branch("batdaulongimpactsig",&xistruct_.batDauTransImpactSig_,"batdaulongimpactsig/F");
     XiTree->Branch("xivtxsignificance3d",&xistruct_.xiVtxSignificance3D_,"xivtxsignificance3d/F");
     XiTree->Branch("vtxsignificance3d",&xistruct_.vtxSignificance3D_,"vtxsignificance3d/F");
+    */
 
 	// XiOmTTree_dist = fs->make< TNtuple>("XiOmTTree","XiOmTTree","eta:phi:pt:chi2:nhits:3Ddca:pt_err_pt:qual");
 }
