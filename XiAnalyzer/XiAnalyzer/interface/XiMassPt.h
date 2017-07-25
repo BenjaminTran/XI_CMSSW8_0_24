@@ -1,7 +1,7 @@
 // -*- C++ -*-
 //
-// Package:    XiCorrelation.h
-// Class:      XiCorrelation.h
+// Package:    XiMassPt.h
+// Class:      XiMassPt.h
 //
 /**\class XiCorrelation XiCorrelation.h
  * RiceHIG/V0Analysis/interface/XiCorrelation.h

@@ -26,16 +26,6 @@ using namespace std;
 using namespace edm;
 using namespace reco;
 
-float piMass              = 0.13957018;
-float piMass_sigma        = piMass*1e-6;
-float piMassSquared       = piMass*piMass;
-float protonMass          = 0.938272013;
-float protonMass_sigma    = protonMass*1e-6;
-float xiMass              = 1.31486;
-float electronMass        = 0.000511;
-float electronMassSquared = electronMass*electronMass;
-float lambdaMass          = 1.115683;
-float lambdaMass_sigma    = 0.000006;
 
 // Constructor
 XiSelector::XiSelector(const edm::ParameterSet& iConfig)
@@ -93,6 +83,17 @@ XiSelector::~XiSelector() {
 // Producer Method
 void XiSelector::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
 
+    float piMass              = 0.13957018;
+    float piMass_sigma        = piMass*1e-6;
+    float piMassSquared       = piMass*piMass;
+    float protonMass          = 0.938272013;
+    float protonMass_sigma    = protonMass*1e-6;
+    float xiMass              = 1.31486;
+    float electronMass        = 0.000511;
+    float electronMassSquared = electronMass*electronMass;
+    float lambdaMass          = 1.115683;
+    float lambdaMass_sigma    = 0.000006;
+
     using namespace edm;
     using namespace reco;
     using std::vector;
@@ -106,14 +107,7 @@ void XiSelector::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
     // get vertex
     edm::Handle<reco::VertexCollection> vertices;
     iEvent.getByToken(_vertexCollName,vertices);
-    //double bestvz = -999.9, bestvx = -999.9, bestvy = -999.9;
-    //double bestvzError = -999.9, bestvxError = -999.9, bestvyError = -999.9;
     const reco::Vertex & bestvtx = (*vertices)[0];
-    //bestvz = bestvtx.z(); bestvx = bestvtx.x(); bestvy = bestvtx.y();
-    //bestvzError = bestvtx.zError(); bestvxError = bestvtx.xError(); bestvyError = bestvtx.yError();
-
-    // Z Vertex cut
-    //if(bestvz > zVertexHigh_ || bestvz < zVertexLow_ ) return;
 
     edm::Handle< reco::VertexCompositeCandidateCollection > v0candidates;
     iEvent.getByToken(_XiCollection, v0candidates);
@@ -300,39 +294,6 @@ void XiSelector::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
     if(VTrkP3DIpSigValue  < VTrkP3DIpSigValue_)  continue;
     if(xiFlightSigValue   < xiFlightSigValue_)   continue;
     if(distanceSigValue   < distanceSigValue_)   continue;
-
-    //trkNHits
-    //int nhit1 = dau2->numberOfValidHits(); 
-    
-    //if(nhit1 <= nHitCut1_) continue;
-
-    //double pt1 = dau1->pt();
-    //double pt2 = dau2->pt();
-
-    //if(pt1 <= ptCut1_ || pt2 <= ptCut2_) continue;
-
-
-    //vtxChi2
-    //double vtxChi2 = v0cand->vertexChi2();
-    //if(vtxChi2 > vtxChi2Cut_) continue;
-
-
-    //PAngle
-    //TVector3 ptosecvec(secvx - bestvx, secvy - bestvy, secvz - bestvz);
-    //TVector3 secvec(px_xi,py_xi,pz_xi);
-    //double agl = cos(secvec.Angle(ptosecvec));
-    //if(agl < cosThetaCut_) continue;
-
-    // Mass window cut
-    /*
-       double massd1   = lambdaMass;
-       double massd2   = piMass;
-       double energyd1 = sqrt(massd1*massd1 + pd1*pd1);
-       double energyd2 = sqrt(massd2*massd2 + pd2*pd2);
-       double invmass  = sqrt((energyd1*energyd2) + (energyd1 + energyd2) - dauvecsum.Mag2());
-       if(fabs(invmass - xiMass)<misIDMassCut_) continue;
-       */
-
 
     theNewXiCands->push_back( *v0cand );
 

@@ -75,8 +75,8 @@ process.source = cms.Source("PoolSource",
 process.TFileService = cms.Service("TFileService",
                                     fileName = cms.string(
                                     #'kslaMassPt.root'
-				    #'CasCutLoose.root'
-                                    'V0Correlation.root'
+				    'CasCutLoose.root'
+                                    #'V0Correlation.root'
 				    )
                                   )
 # CORRELATION
@@ -88,7 +88,23 @@ process.TFileService = cms.Service("TFileService",
 process.XiCorrAnalysis = cms.Sequence(process.selectV0CandidatesLowXi*process.xiCorrelation)
 process.V0CorrAnalysis = cms.Sequence(process.selectV0CandidatesNewlambdatight*process.selectV0CandidatesNewkshort*process.v0Correlation)
 
-process.p = cms.Path(process.V0CorrAnalysis)
+# 2D Mass Pt hist Note: only one process at a time pls
+# all particles
+process.MassPtAnalysis = cms.Sequence(process.selectV0CandidatesLowXi*process.selectV0CandidatesNewlambdatight*process.selectV0CandidatesNewkshort*process.MassPt)
+
+# Xi only
+process.XiMassPtAnalysis = cms.Sequence(process.selectV0CandidatesXiLoose*process.XiMassPt)
+
+# KsLa only
+process.V0MassPtAnalysis = cms.Sequence(process.selectV0CandidatesNewlambdatight*process.selectV0CandidatesNewkshort*process.KslaMassPt)
+
+# Ks only
+process.KsMassPtAnalysis = cms.Sequence(process.selectV0CandidatesNewkshort*process.KsMassPt)
+
+# La only
+process.LaMassPtAnalysis = cms.Sequence(process.selectV0CandidatesNewlambdatight*process.LaMassPt)
+
+process.p = cms.Path(process.XiMassPtAnalysis)
 
 process.schedule = cms.Schedule(process.p)
 
