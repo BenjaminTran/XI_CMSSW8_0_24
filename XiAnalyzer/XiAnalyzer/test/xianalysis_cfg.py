@@ -104,7 +104,7 @@ process.KsMassPtAnalysis = cms.Sequence(process.selectV0CandidatesLowXi*process.
 # La only
 process.LaMassPtAnalysis = cms.Sequence(process.selectV0CandidatesLowXi*process.selectV0CandidatesNewlambdatight*process.selectV0CandidatesNewkshort*process.LaMassPt)
 
-process.p = cms.Path(process.V0CorrAnalysis)
+process.p = cms.Path(process.XiCorrAnalysis)
 
 process.schedule = cms.Schedule(process.p)
 

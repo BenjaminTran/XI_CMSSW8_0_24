@@ -88,6 +88,7 @@ struct XiData{
                 //Candidate parameters
                 float mass_;
                 float pt_;
+                int n_;
         };
 
 class XiOmTTree : public edm::EDAnalyzer
@@ -105,6 +106,7 @@ private:
 
     edm::EDGetTokenT<reco::VertexCompositeCandidateCollection> _xiCollection;
     edm::EDGetTokenT<reco::VertexCollection> _vertexCollName;
+    edm::EDGetTokenT<reco::TrackCollection> _trkSrc;
 
 	TTree* XiTree;
 	TTree* OmTree;

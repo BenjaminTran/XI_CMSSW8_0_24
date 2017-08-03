@@ -36,7 +36,7 @@ process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(5000)
 process.options = cms.untracked.PSet(wantSummary = cms.untracked.bool(True))
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
-#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10000) )
 
 process.source = cms.Source("PoolSource",
     # replace 'myfile.root' with the source file you want to use
@@ -74,9 +74,10 @@ process.source = cms.Source("PoolSource",
 # Additional output definition
 process.TFileService = cms.Service("TFileService",
                                     fileName = cms.string(
-				    'CasCutLooseTester.root'
-                                    #'XiOmTTree.root'
-				    )
+                                        #'CasCutLooseTester.root'
+                                        #'XiOmTTree.root'
+                                        'TestWei.root'
+                                        )
                                   )
 # CORRELATION
 # MinBias
@@ -87,7 +88,7 @@ process.TFileService = cms.Service("TFileService",
 process.XiCorrAnalysis = cms.Sequence(process.selectV0CandidatesLowXi*process.xiCorrelation)
 process.V0CorrAnalysis = cms.Sequence(process.selectV0CandidatesNewlambdatight*process.selectV0CandidatesNewkshort*process.v0Correlation)
 
-# 2D Mass Pt hist 
+# 2D Mass Pt hist
 # all particles
 process.MassPtAnalysis = cms.Sequence(process.selectV0CandidatesLowXi*process.selectV0CandidatesNewlambdatight*process.selectV0CandidatesNewkshort*process.MassPt)
 
@@ -106,8 +107,8 @@ process.LaMassPtAnalysis = cms.Sequence(process.selectV0CandidatesNewlambdatight
 #Tree producer
 process.XiOmTreeProd = cms.Sequence(process.xiTree)
 
-#process.p = cms.Path(process.XiOmTreeProd)
-process.p = cms.Path(process.XiMassPtAnalysis)
+process.p = cms.Path(process.XiOmTreeProd)
+#process.p = cms.Path(process.XiMassPtAnalysis)
 
 process.schedule = cms.Schedule(process.p)
 
