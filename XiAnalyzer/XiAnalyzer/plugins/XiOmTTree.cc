@@ -101,14 +101,14 @@ XiOmTTree::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     if(EtaPtCutnTracks >= 185 && EtaPtCutnTracks < 220)
     {
         //Determine number of candidates
-        //
+
         int numv0cand = 0;
         cout << "Good multiplicity" << endl;
         for( reco::VertexCompositeCandidateCollection::const_iterator v0cand =
                 v0candidates->begin(); v0cand != v0candidates->end();
                 v0cand++)
         {
-            cout << "Candidates exits" << endl;
+        cout << "Candidates exits" << endl;
             //double secvz = -999.9, secvx = -999.9, secvy = -999.9;
 
             // access daughters of Xi and Lambda
@@ -407,7 +407,7 @@ XiOmTTree::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
             xistruct_.batDauLongImpactSig_  = xi_dau2_dz/xi_dau2_dzerror;
             xistruct_.xiVtxSignificance3D_  = dl_xi/dlerror_xi;
             xistruct_.vtxSignificance3D_    = dl_la/dlerror_la;
-            */
+             */
 
             XiTree->Fill();
         }
